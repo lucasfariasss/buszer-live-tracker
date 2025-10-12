@@ -70,7 +70,7 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
     // Ajustar posição dos controles via CSS para ficarem abaixo do cartão
     const navElement = document.querySelector('.mapboxgl-ctrl-top-right') as HTMLElement;
     if (navElement) {
-      navElement.style.top = '240px'; // Posiciona abaixo do cartão
+      navElement.style.top = '270px'; // Posiciona abaixo do cartão com margem
     }
 
     // Criar elemento customizado para o marcador
