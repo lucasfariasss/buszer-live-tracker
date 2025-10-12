@@ -14,7 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      onibus: {
+        Row: {
+          atualizado_em: string | null
+          id: number
+          latitude: number
+          longitude: number
+          nome: string
+        }
+        Insert: {
+          atualizado_em?: string | null
+          id?: number
+          latitude: number
+          longitude: number
+          nome?: string
+        }
+        Update: {
+          atualizado_em?: string | null
+          id?: number
+          latitude?: number
+          longitude?: number
+          nome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
