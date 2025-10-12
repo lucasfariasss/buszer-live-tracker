@@ -15,6 +15,7 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Buscar o token do Mapbox
   useEffect(() => {
@@ -24,16 +25,22 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
         
         if (error) {
           console.error('Erro ao buscar token do Mapbox:', error);
-          toast.error('Erro ao carregar o mapa. Configure o token do Mapbox.');
+          toast.error('Configure o token MAPBOX_PUBLIC_TOKEN no Supabase');
+          setIsLoading(false);
           return;
         }
         
         if (data?.token) {
           setMapboxToken(data.token);
+          setIsLoading(false);
+        } else {
+          toast.error('Token do Mapbox não configurado');
+          setIsLoading(false);
         }
       } catch (err) {
         console.error('Erro ao buscar token:', err);
         toast.error('Erro ao carregar o mapa');
+        setIsLoading(false);
       }
     };
 
@@ -42,7 +49,7 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
 
   // Inicializar o mapa
   useEffect(() => {
-    if (!mapContainer.current || !mapboxToken) return;
+    if (!mapContainer.current || !mapboxToken || isLoading) return;
     if (map.current) return;
 
     mapboxgl.accessToken = mapboxToken;
@@ -93,6 +100,25 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
       onLocationUpdate(latitude, longitude);
     }
   }, [latitude, longitude, onLocationUpdate]);
+
+  if (isLoading) {
+    return (
+      <div className="relative w-full h-screen bg-muted flex items-center justify-center">
+        <p className="text-muted-foreground">Carregando mapa...</p>
+      </div>
+    );
+  }
+
+  if (!mapboxToken) {
+    return (
+      <div className="relative w-full h-screen bg-muted flex items-center justify-center">
+        <div className="text-center space-y-2 p-6">
+          <p className="text-foreground font-semibold">Mapa não disponível</p>
+          <p className="text-sm text-muted-foreground">Configure o token MAPBOX_PUBLIC_TOKEN no Supabase</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-screen">
