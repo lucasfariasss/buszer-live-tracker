@@ -117,21 +117,17 @@ const Index = () => {
   }
 
   return (
-    <div className="flex flex-col w-full h-screen bg-background">
-      <div className="p-4">
-        <BusLocationCard
-          latitude={busData.latitude}
-          longitude={busData.longitude}
-          busName={busData.nome}
-          lastUpdate={busData.atualizado_em}
-        />
-      </div>
-      <div className="flex-1 min-h-0">
-        <BusMap 
-          latitude={busData.latitude} 
-          longitude={busData.longitude}
-        />
-      </div>
+    <div className="relative w-full h-screen overflow-hidden">
+      <BusMap 
+        latitude={busData.latitude} 
+        longitude={busData.longitude}
+      />
+      <BusLocationCard
+        latitude={busData.latitude}
+        longitude={busData.longitude}
+        busName={busData.nome}
+        lastUpdate={busData.atualizado_em}
+      />
     </div>
   );
 };

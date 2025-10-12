@@ -61,12 +61,17 @@ const BusMap = ({ latitude, longitude, onLocationUpdate }: BusMapProps) => {
       zoom: 13,
     });
 
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
+    // Adicionar controles de navegação posicionados abaixo do cartão
+    const nav = new mapboxgl.NavigationControl({
+      visualizePitch: true,
+    });
+    map.current.addControl(nav, 'top-right');
+    
+    // Ajustar posição dos controles via CSS para ficarem abaixo do cartão
+    const navElement = document.querySelector('.mapboxgl-ctrl-top-right') as HTMLElement;
+    if (navElement) {
+      navElement.style.top = '240px'; // Posiciona abaixo do cartão
+    }
 
     // Criar elemento customizado para o marcador
     const el = document.createElement('div');

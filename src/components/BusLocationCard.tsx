@@ -10,7 +10,7 @@ interface BusLocationCardProps {
 
 const BusLocationCard = ({ latitude, longitude, busName, lastUpdate }: BusLocationCardProps) => {
   return (
-    <Card className="w-full bg-gradient-to-b from-card to-card/95 backdrop-blur-sm border-primary/20 shadow-[var(--shadow-card)]">
+    <Card className="absolute top-6 left-1/2 -translate-x-1/2 z-10 w-[90%] max-w-md bg-gradient-to-b from-card to-card/95 backdrop-blur-sm border-primary/20 shadow-[var(--shadow-card)]">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-[var(--shadow-bus)]">
