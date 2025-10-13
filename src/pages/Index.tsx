@@ -27,7 +27,6 @@ const Index = () => {
           .maybeSingle();
 
         if (error) {
-          console.error('Erro ao buscar dados do ônibus:', error);
           toast.error('Erro ao carregar dados do ônibus');
           setLoading(false);
           return;
@@ -39,7 +38,6 @@ const Index = () => {
           toast.error('Nenhum ônibus encontrado. Aguardando dados do rastreador...');
         }
       } catch (err) {
-        console.error('Erro:', err);
         toast.error('Erro ao carregar dados');
       } finally {
         setLoading(false);
@@ -60,8 +58,6 @@ const Index = () => {
           filter: 'nome=eq.Ônibus Principal'
         },
         (payload) => {
-          console.log('Atualização recebida:', payload);
-          
           if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
             setBusData(payload.new as BusData);
             toast.success('Localização atualizada!', {
