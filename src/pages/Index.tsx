@@ -36,24 +36,7 @@ const Index = () => {
         if (data) {
           setBusData(data);
         } else {
-          // Se não existir, criar com coordenadas de João Pessoa
-          const { data: newData, error: insertError } = await supabase
-            .from('onibus')
-            .insert({
-              nome: 'Ônibus Principal',
-              latitude: -7.1197,
-              longitude: -34.8659
-            })
-            .select()
-            .single();
-
-          if (insertError) {
-            console.error('Erro ao criar registro:', insertError);
-            toast.error('Erro ao criar registro do ônibus');
-          } else if (newData) {
-            setBusData(newData);
-            toast.success('Ônibus inicializado em João Pessoa');
-          }
+          toast.error('Nenhum ônibus encontrado. Aguardando dados do rastreador...');
         }
       } catch (err) {
         console.error('Erro:', err);
