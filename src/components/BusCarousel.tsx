@@ -31,13 +31,13 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-6 pt-8 bg-gradient-to-t from-background/95 via-background/80 to-transparent">
+    <div className="fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-4 pt-8 bg-gradient-to-t from-background/90 via-background/70 to-transparent pointer-events-none">
       <Carousel
         opts={{
           align: "center",
           loop: false,
         }}
-        className="w-full"
+        className="w-full pointer-events-auto"
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {buses.map((bus) => {
