@@ -1,4 +1,5 @@
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { useState, useEffect } from "react";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
 import { Bus, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -19,6 +20,27 @@ interface BusCarouselProps {
 }
 
 const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [canDrag, setCanDrag] = useState(true);
+
+  useEffect(() => {
+    if (!api) return;
+    
+    const updateDragState = () => {
+      const shouldDrag = api.canScrollPrev() || api.canScrollNext();
+      setCanDrag(shouldDrag);
+    };
+    
+    updateDragState();
+    api.on('reInit', updateDragState);
+    api.on('select', updateDragState);
+    
+    return () => {
+      api.off('reInit', updateDragState);
+      api.off('select', updateDragState);
+    };
+  }, [api]);
+
   const getTimeAgo = (timestamp: string) => {
     try {
       return formatDistanceToNow(new Date(timestamp), { 
@@ -37,8 +59,9 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
           opts={{
             align: "start",
             loop: false,
-            watchDrag: buses.length > 4,
+            watchDrag: canDrag,
           }}
+          setApi={setApi}
           className="w-full"
         >
           <CarouselContent className="py-2 lg:justify-center">
