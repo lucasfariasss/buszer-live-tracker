@@ -16,9 +16,9 @@ interface BusSelectorProps {
 
 const BusSelector = ({ buses, selectedBusId, onSelectBus }: BusSelectorProps) => {
   return (
-    <div className="absolute top-6 right-6 z-[1000]">
+    <div className="absolute top-4 sm:top-6 right-4 sm:right-6 left-4 sm:left-auto z-[1000] px-2 sm:px-0">
       <Select value={selectedBusId.toString()} onValueChange={(value) => onSelectBus(Number(value))}>
-        <SelectTrigger className="w-[240px] bg-card backdrop-blur-sm border-primary/20 shadow-lg">
+        <SelectTrigger className="w-full max-w-[240px] sm:w-[240px] bg-card backdrop-blur-sm border-primary/20 shadow-lg">
           <div className="flex items-center gap-2">
             <Bus className="w-4 h-4 text-primary" />
             <SelectValue placeholder="Selecione um ônibus" />
