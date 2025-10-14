@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import BusMap from "@/components/BusMap";
 import BusLocationCard from "@/components/BusLocationCard";
-import BusSelector from "@/components/BusSelector";
+import BusCarousel from "@/components/BusCarousel";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -113,11 +113,6 @@ const Index = () => {
         buses={buses}
         selectedBusId={selectedBusId}
       />
-      <BusSelector 
-        buses={buses}
-        selectedBusId={selectedBusId}
-        onSelectBus={setSelectedBusId}
-      />
       {selectedBus && (
         <BusLocationCard
           latitude={selectedBus.latitude}
@@ -126,6 +121,11 @@ const Index = () => {
           lastUpdate={selectedBus.atualizado_em}
         />
       )}
+      <BusCarousel 
+        buses={buses}
+        selectedBusId={selectedBusId}
+        onSelectBus={setSelectedBusId}
+      />
     </div>
   );
 };
