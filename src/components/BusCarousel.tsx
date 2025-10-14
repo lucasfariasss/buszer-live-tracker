@@ -31,8 +31,8 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
   };
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center">
-      <div className="w-screen sm:w-full sm:max-w-md">
+    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-screen-sm lg:max-w-screen-md">
         <Carousel
           opts={{
             align: "center",
@@ -40,13 +40,13 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-2 md:-ml-4 -mr-2 md:-mr-4 py-2 px-4">
+          <CarouselContent className="py-2">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
                 <CarouselItem 
                   key={bus.id} 
-                  className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3"
+                  className="pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
                 >
                   <Card
                     onClick={() => onSelectBus(bus.id)}
@@ -59,7 +59,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
                       bg-card
                     `}
                   >
-                    <div className="p-4">
+                    <div className="p-3 sm:p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Bus className={`w-4 h-4 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
                         <span className="font-semibold text-sm truncate">{bus.nome}</span>
