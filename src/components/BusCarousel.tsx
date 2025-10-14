@@ -34,10 +34,12 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
     updateDragState();
     api.on('reInit', updateDragState);
     api.on('select', updateDragState);
+    api.on('resize', updateDragState);
     
     return () => {
       api.off('reInit', updateDragState);
       api.off('select', updateDragState);
+      api.off('resize', updateDragState);
     };
   }, [api]);
 
