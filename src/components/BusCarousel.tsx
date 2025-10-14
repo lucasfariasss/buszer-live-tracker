@@ -31,7 +31,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
   };
 
   return (
-    <div className="absolute bottom-6 left-0 right-0 z-[1000] px-4">
+    <div className="fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-6 pt-4 bg-gradient-to-t from-background via-background to-transparent">
       <Carousel
         opts={{
           align: "center",
