@@ -32,7 +32,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
 
   return (
     <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center">
-      <div className="w-screen sm:w-full sm:max-w-md">
+      <div className="w-[calc(100vw-2rem)] sm:w-full sm:max-w-md">
         <Carousel
           opts={{
             align: "center",
