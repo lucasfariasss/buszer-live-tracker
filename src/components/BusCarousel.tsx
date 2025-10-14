@@ -40,7 +40,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-2 md:-ml-4 py-2">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
@@ -53,7 +53,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
                     className={`
                       cursor-pointer transition-all duration-300
                       ${isSelected 
-                        ? 'border-primary border-2 scale-105 shadow-xl' 
+                        ? 'border-primary border-2 shadow-xl' 
                         : 'border-primary/20 shadow-lg hover:shadow-xl'
                       }
                       bg-card
