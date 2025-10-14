@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 import BusMap from "@/components/BusMap";
 import BusLocationCard from "@/components/BusLocationCard";
 import BusCarousel from "@/components/BusCarousel";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Shield } from "lucide-react";
 
 interface BusData {
   id: number;
@@ -109,6 +111,13 @@ const Index = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      <Link to="/auth" className="absolute top-4 right-4 z-[1000]">
+        <Button variant="secondary" size="sm">
+          <Shield className="mr-2 h-4 w-4" />
+          Admin
+        </Button>
+      </Link>
+      
       <BusMap 
         buses={buses}
         selectedBusId={selectedBusId}
