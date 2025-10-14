@@ -131,7 +131,7 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
   }, [selectedBusId, buses]);
 
   return (
-    <div className="fixed inset-0 w-full h-full">
+    <div className="relative w-full h-screen">
       <div ref={mapContainer} className="absolute inset-0 w-full h-full" />
     </div>
   );
