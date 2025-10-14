@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import BusMap from "@/components/BusMap";
 import BusLocationCard from "@/components/BusLocationCard";
+import BusSelector from "@/components/BusSelector";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -14,7 +15,8 @@ interface BusData {
 }
 
 const Index = () => {
-  const [busData, setBusData] = useState<BusData | null>(null);
+  const [buses, setBuses] = useState<BusData[]>([]);
+  const [selectedBusId, setSelectedBusId] = useState<number>(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,17 +25,17 @@ const Index = () => {
         const { data, error } = await supabase
           .from('onibus')
           .select('*')
-          .eq('nome', 'Ônibus Principal')
-          .maybeSingle();
+          .order('id', { ascending: true });
 
         if (error) {
-          toast.error('Erro ao carregar dados do ônibus');
+          toast.error('Erro ao carregar dados dos ônibus');
           setLoading(false);
           return;
         }
 
-        if (data) {
-          setBusData(data);
+        if (data && data.length > 0) {
+          setBuses(data);
+          setSelectedBusId(data[0].id);
         } else {
           toast.error('Nenhum ônibus encontrado. Aguardando dados do rastreador...');
         }
@@ -54,14 +56,22 @@ const Index = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'onibus',
-          filter: 'nome=eq.Ônibus Principal'
+          table: 'onibus'
         },
         (payload) => {
           if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
-            setBusData(payload.new as BusData);
+            const updatedBus = payload.new as BusData;
+            setBuses(prev => {
+              const index = prev.findIndex(b => b.id === updatedBus.id);
+              if (index >= 0) {
+                const newBuses = [...prev];
+                newBuses[index] = updatedBus;
+                return newBuses;
+              }
+              return [...prev, updatedBus];
+            });
             toast.success('Localização atualizada!', {
-              description: 'A posição do ônibus foi atualizada em tempo real.',
+              description: `${updatedBus.nome} foi atualizado em tempo real.`,
             });
           }
         }
@@ -84,29 +94,38 @@ const Index = () => {
     );
   }
 
-  if (!busData) {
+  if (buses.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-2">Nenhum ônibus encontrado</h1>
-          <p className="text-muted-foreground">Não foi possível carregar os dados do ônibus.</p>
+          <p className="text-muted-foreground">Não foi possível carregar os dados dos ônibus.</p>
         </div>
       </div>
     );
   }
 
+  const selectedBus = buses.find(b => b.id === selectedBusId);
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <BusMap 
-        latitude={busData.latitude} 
-        longitude={busData.longitude}
+        buses={buses}
+        selectedBusId={selectedBusId}
       />
-      <BusLocationCard
-        latitude={busData.latitude}
-        longitude={busData.longitude}
-        busName={busData.nome}
-        lastUpdate={busData.atualizado_em}
+      <BusSelector 
+        buses={buses}
+        selectedBusId={selectedBusId}
+        onSelectBus={setSelectedBusId}
       />
+      {selectedBus && (
+        <BusLocationCard
+          latitude={selectedBus.latitude}
+          longitude={selectedBus.longitude}
+          busName={selectedBus.nome}
+          lastUpdate={selectedBus.atualizado_em}
+        />
+      )}
     </div>
   );
 };
