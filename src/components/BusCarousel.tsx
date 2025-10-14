@@ -40,7 +40,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-2 md:-ml-4 py-2 px-4">
+          <CarouselContent className="-ml-2 md:-ml-4 -mr-2 md:-mr-4 py-2 px-4">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
