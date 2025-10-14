@@ -131,7 +131,7 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
   }, [selectedBusId, buses]);
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="fixed inset-0 w-screen h-screen">
       <div ref={mapContainer} className="absolute inset-0" />
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-transparent" />
     </div>

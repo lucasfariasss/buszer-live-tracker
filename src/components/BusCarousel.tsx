@@ -31,7 +31,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-6 pt-4 bg-gradient-to-t from-background via-background to-transparent">
+    <div className="fixed bottom-0 left-0 right-0 z-[1000] px-4 pb-6 pt-8 bg-gradient-to-t from-background/95 via-background/80 to-transparent">
       <Carousel
         opts={{
           align: "center",
@@ -52,10 +52,10 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
                   className={`
                     cursor-pointer transition-all duration-300
                     ${isSelected 
-                      ? 'border-primary border-2 scale-105 opacity-100' 
-                      : 'border-primary/20 opacity-70 hover:opacity-90'
+                      ? 'border-primary border-2 scale-105 bg-card/95 shadow-xl' 
+                      : 'border-primary/20 bg-card/60 hover:bg-card/75 shadow-lg'
                     }
-                    bg-card backdrop-blur-sm shadow-lg
+                    backdrop-blur-md
                   `}
                 >
                   <div className="p-4">

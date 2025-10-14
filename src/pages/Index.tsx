@@ -108,7 +108,7 @@ const Index = () => {
   const selectedBus = buses.find(b => b.id === selectedBusId);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden">
       <BusMap 
         buses={buses}
         selectedBusId={selectedBusId}
