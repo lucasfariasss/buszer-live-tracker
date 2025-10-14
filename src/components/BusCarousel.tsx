@@ -35,12 +35,13 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
       <div className="w-full max-w-screen-sm lg:max-w-screen-md">
         <Carousel
           opts={{
-            align: "center",
+            align: "start",
             loop: false,
+            watchDrag: buses.length > 4,
           }}
           className="w-full"
         >
-          <CarouselContent className="py-2">
+          <CarouselContent className="py-2 lg:justify-center">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
