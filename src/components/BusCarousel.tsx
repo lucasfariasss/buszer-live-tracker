@@ -88,7 +88,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
             <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent pointer-events-none md:hidden z-10" />
           )}
 
-          <CarouselContent className="py-2 -ml-2">
+          <CarouselContent className="py-2 -ml-2 md:justify-center">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
