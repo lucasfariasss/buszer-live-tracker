@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import BusMap from "@/components/BusMap";
 import BusLocationCard from "@/components/BusLocationCard";
-import BusCarousel from "@/components/BusCarousel";
+import BusDrawer from "@/components/BusDrawer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader2, Shield } from "lucide-react";
@@ -118,19 +118,22 @@ const Index = () => {
         </Button>
       </Link>
       
-      <BusMap 
-        buses={buses}
-        selectedBusId={selectedBusId}
-      />
-      {selectedBus && (
-        <BusLocationCard
-          latitude={selectedBus.latitude}
-          longitude={selectedBus.longitude}
-          busName={selectedBus.nome}
-          lastUpdate={selectedBus.atualizado_em}
+      <div className="md:ml-80 h-full">
+        <BusMap 
+          buses={buses}
+          selectedBusId={selectedBusId}
         />
-      )}
-      <BusCarousel 
+        {selectedBus && (
+          <BusLocationCard
+            latitude={selectedBus.latitude}
+            longitude={selectedBus.longitude}
+            busName={selectedBus.nome}
+            lastUpdate={selectedBus.atualizado_em}
+          />
+        )}
+      </div>
+
+      <BusDrawer 
         buses={buses}
         selectedBusId={selectedBusId}
         onSelectBus={setSelectedBusId}
