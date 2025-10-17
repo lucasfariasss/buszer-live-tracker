@@ -80,13 +80,28 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
     });
 
     return () => {
-      map.current?.remove();
+      // Remover todos os marcadores
+      markers.current.forEach(marker => marker.remove());
+      markers.current.clear();
+      
+      // Remover e limpar o mapa
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []);
 
   // Atualizar marcadores quando os dados dos ônibus mudarem
   useEffect(() => {
     if (!map.current) return;
+
+    // Verificar se o mapa ainda é válido
+    try {
+      map.current.getZoom();
+    } catch {
+      return;
+    }
 
     const createBusIcon = (isSelected: boolean) => L.divIcon({
       className: 'bus-marker',
@@ -120,13 +135,18 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
 
   // Centralizar no ônibus selecionado
   useEffect(() => {
-    if (!map.current) return;
+    const m = map.current;
+    if (!m) return;
     
     const selectedBus = buses.find(b => b.id === selectedBusId);
     if (selectedBus) {
-      map.current.flyTo([selectedBus.latitude, selectedBus.longitude], 13, {
-        duration: 1,
-      });
+      try {
+        m.flyTo([selectedBus.latitude, selectedBus.longitude], 13, {
+          duration: 1,
+        });
+      } catch (error) {
+        console.warn('Erro ao centralizar mapa:', error);
+      }
     }
   }, [selectedBusId, buses]);
 
