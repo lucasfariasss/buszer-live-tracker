@@ -66,13 +66,13 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
           setApi={setApi}
           className="w-full"
         >
-          <CarouselContent className="py-2 lg:justify-center">
+          <CarouselContent className="py-2 px-4 lg:justify-center">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
                 <CarouselItem 
                   key={bus.id} 
-                  className="pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
+                  className="basis-1/2 sm:basis-1/3 lg:basis-1/4"
                 >
                   <Card
                     onClick={() => onSelectBus(bus.id)}
