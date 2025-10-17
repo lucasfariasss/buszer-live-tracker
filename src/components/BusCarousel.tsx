@@ -56,14 +56,14 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[1000] bg-gradient-to-t from-background/95 to-background/0 pb-4 pt-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="relative">
+      <div className="w-full px-4 md:px-8 lg:px-12 xl:px-16">
+        <div className="relative max-w-[1600px] mx-auto">
           {/* Botão Anterior - Desktop */}
           {canScrollPrev && (
             <Button
               variant="outline"
               size="icon"
-              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur shadow-lg border-2"
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 xl:-translate-x-14 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur shadow-lg border-2"
               onClick={() => api?.scrollPrev()}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -85,7 +85,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
                 return (
                   <CarouselItem 
                     key={bus.id} 
-                    className="pl-2 md:pl-4 basis-[85%] xs:basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+                    className="pl-2 md:pl-4 basis-[85%] xs:basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-[16.666%]"
                   >
                     <Card
                       onClick={() => onSelectBus(bus.id)}
@@ -125,7 +125,7 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
             <Button
               variant="outline"
               size="icon"
-              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur shadow-lg border-2"
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 xl:translate-x-14 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur shadow-lg border-2"
               onClick={() => api?.scrollNext()}
             >
               <ChevronRight className="h-5 w-5" />

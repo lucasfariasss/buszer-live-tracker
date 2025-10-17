@@ -80,7 +80,10 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
     });
 
     return () => {
+      markers.current.forEach(marker => marker.remove());
+      markers.current.clear();
       map.current?.remove();
+      map.current = null;
     };
   }, []);
 
@@ -120,13 +123,18 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
 
   // Centralizar no ônibus selecionado
   useEffect(() => {
-    if (!map.current) return;
+    const m = map.current;
+    if (!m) return;
     
     const selectedBus = buses.find(b => b.id === selectedBusId);
     if (selectedBus) {
-      map.current.flyTo([selectedBus.latitude, selectedBus.longitude], 13, {
-        duration: 1,
-      });
+      try {
+        m.flyTo([selectedBus.latitude, selectedBus.longitude], 13, {
+          duration: 1,
+        });
+      } catch (error) {
+        console.error('Error flying to bus location:', error);
+      }
     }
   }, [selectedBusId, buses]);
 
