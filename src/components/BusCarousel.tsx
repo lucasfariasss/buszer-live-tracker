@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
 import { Bus, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -21,27 +21,37 @@ interface BusCarouselProps {
 
 const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) => {
   const [api, setApi] = useState<CarouselApi>();
-  const [canDrag, setCanDrag] = useState(true);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
 
   useEffect(() => {
     if (!api) return;
     
-    const updateDragState = () => {
-      const shouldDrag = api.canScrollPrev() || api.canScrollNext();
-      setCanDrag(shouldDrag);
+    const updateScrollState = () => {
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
     };
     
-    updateDragState();
-    api.on('reInit', updateDragState);
-    api.on('select', updateDragState);
-    api.on('resize', updateDragState);
+    updateScrollState();
+    api.on('reInit', updateScrollState);
+    api.on('select', updateScrollState);
+    api.on('resize', updateScrollState);
     
     return () => {
-      api.off('reInit', updateDragState);
-      api.off('select', updateDragState);
-      api.off('resize', updateDragState);
+      api.off('reInit', updateScrollState);
+      api.off('select', updateScrollState);
+      api.off('resize', updateScrollState);
     };
   }, [api]);
+
+  // Auto-scroll para o card selecionado
+  useEffect(() => {
+    if (!api) return;
+    const index = buses.findIndex(b => b.id === selectedBusId);
+    if (index !== -1) {
+      api.scrollTo(index);
+    }
+  }, [selectedBusId, api, buses]);
 
   const getTimeAgo = (timestamp: string) => {
     try {
@@ -55,32 +65,44 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
   };
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-screen-sm lg:max-w-screen-md">
+    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+      <div className="w-full max-w-[1600px] relative">
         <Carousel
           opts={{
-            align: "start",
+            align: "center",
             loop: false,
-            watchDrag: canDrag,
+            dragFree: true,
+            containScroll: "trimSnaps",
+            skipSnaps: false,
           }}
           setApi={setApi}
           className="w-full"
         >
-          <CarouselContent className="py-2 px-4 lg:justify-center">
+          {/* Indicador de scroll esquerdo */}
+          {canScrollPrev && (
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent pointer-events-none md:hidden z-10" />
+          )}
+          
+          {/* Indicador de scroll direito */}
+          {canScrollNext && (
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent pointer-events-none md:hidden z-10" />
+          )}
+
+          <CarouselContent className="py-2 -ml-2">
             {buses.map((bus) => {
               const isSelected = bus.id === selectedBusId;
               return (
                 <CarouselItem 
                   key={bus.id} 
-                  className="basis-1/2 sm:basis-1/3 lg:basis-1/4"
+                  className="basis-[85%] min-[480px]:basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-[14.28%] 2xl:basis-[12.5%] pl-2"
                 >
                   <Card
                     onClick={() => onSelectBus(bus.id)}
                     className={`
                       cursor-pointer transition-all duration-300
                       ${isSelected 
-                        ? 'border-primary border-2 shadow-xl' 
-                        : 'border-primary/20 shadow-lg hover:shadow-xl'
+                        ? 'border-primary border-2 shadow-xl scale-105' 
+                        : 'border-primary/20 shadow-lg hover:shadow-xl hover:scale-[1.02]'
                       }
                       bg-card
                     `}
@@ -100,6 +122,10 @@ const BusCarousel = ({ buses, selectedBusId, onSelectBus }: BusCarouselProps) =>
               );
             })}
           </CarouselContent>
+
+          {/* Botões de navegação para desktop */}
+          <CarouselPrevious className="hidden md:flex -left-12 lg:-left-14" />
+          <CarouselNext className="hidden md:flex -right-12 lg:-right-14" />
         </Carousel>
       </div>
     </div>
