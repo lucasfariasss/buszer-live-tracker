@@ -161,33 +161,28 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
         dismissible={false}
       >
         <DrawerContent className="md:hidden">
-          <DrawerHeader className="pb-2">
-            <DrawerTitle className="text-base">
-              {snapPoint === 0.15 && selectedBus ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Bus className="h-4 w-4 text-primary" />
-                    <span className="font-semibold">{selectedBus.nome}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {getTimeAgo(selectedBus.atualizado_em)}
-                  </span>
+          <DrawerHeader className="pb-3">
+            <DrawerTitle className="text-base text-center">
+              {snapPoint === 0.15 ? (
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <Bus className="h-5 w-5" />
+                  <span>Ver Rotas Disponíveis</span>
                 </div>
               ) : (
-                "Selecione um Ônibus"
+                "Rotas de Ônibus"
               )}
             </DrawerTitle>
           </DrawerHeader>
 
           {snapPoint !== 0.15 && (
-            <div className="px-4 pb-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="px-4 pb-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar ônibus ou rota..."
+                  placeholder="Buscar rota..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-11 text-base"
+                  className="pl-10 h-12 text-base border-2"
                 />
               </div>
             </div>
