@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import BusMap from "@/components/BusMap";
-import BusLocationCard from "@/components/BusLocationCard";
+
 import BusDrawer from "@/components/BusDrawer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2, Shield } from "lucide-react";
+import { Loader2, Shield, Bus } from "lucide-react";
 
 interface BusData {
   id: number;
@@ -107,32 +107,35 @@ const Index = () => {
     );
   }
 
-  const selectedBus = buses.find(b => b.id === selectedBusId);
+  
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <Link to="/auth" className="absolute top-4 right-4 z-[1000]">
-        <Button variant="secondary" size="sm">
-          <Shield className="mr-2 h-4 w-4" />
-          Admin
-        </Button>
-      </Link>
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 h-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-[1000] flex items-center justify-between px-4 md:px-6">
+        <div className="flex items-center gap-2">
+          <Bus className="h-6 w-6 text-primary" />
+          <h1 className="text-xl font-bold text-foreground">Buszer</h1>
+        </div>
+        
+        <Link to="/auth">
+          <Button variant="ghost" size="sm" className="gap-2">
+            <Shield className="h-4 w-4" />
+            <span className="hidden sm:inline">Admin</span>
+          </Button>
+        </Link>
+      </header>
       
-      <div className="md:ml-80 h-full">
+      {/* Main Content */}
+      <div className="md:ml-80 h-full pt-16">
         <BusMap 
           buses={buses}
           selectedBusId={selectedBusId}
+          onSelectBus={setSelectedBusId}
         />
-        {selectedBus && (
-          <BusLocationCard
-            latitude={selectedBus.latitude}
-            longitude={selectedBus.longitude}
-            busName={selectedBus.nome}
-            lastUpdate={selectedBus.atualizado_em}
-          />
-        )}
       </div>
 
+      {/* Bus Selection Drawer/Sidebar */}
       <BusDrawer 
         buses={buses}
         selectedBusId={selectedBusId}

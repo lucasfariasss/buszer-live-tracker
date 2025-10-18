@@ -7,15 +7,16 @@ interface BusData {
   nome: string;
   latitude: number;
   longitude: number;
+  atualizado_em: string;
 }
 
 interface BusMapProps {
   buses: BusData[];
   selectedBusId: number;
-  onLocationUpdate?: (lat: number, lng: number) => void;
+  onSelectBus: (id: number) => void;
 }
 
-const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
+const BusMap = ({ buses, selectedBusId, onSelectBus }: BusMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const markers = useRef<Map<number, L.Marker>>(new Map());
@@ -76,6 +77,62 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
     buses.forEach(bus => {
       const icon = createBusIcon(bus.id === selectedBusId);
       const marker = L.marker([bus.latitude, bus.longitude], { icon }).addTo(map.current!);
+      
+      // Adicionar popup ao marcador
+      const getTimeAgo = (timestamp: string) => {
+        const now = new Date();
+        const updated = new Date(timestamp);
+        const diffInMinutes = Math.floor((now.getTime() - updated.getTime()) / (1000 * 60));
+        
+        if (diffInMinutes < 1) return 'Agora mesmo';
+        if (diffInMinutes === 1) return '1 min atrás';
+        if (diffInMinutes < 60) return `${diffInMinutes} min atrás`;
+        
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours === 1) return '1 hora atrás';
+        return `${diffInHours} horas atrás`;
+      };
+
+      const isRecentlyUpdated = (timestamp: string) => {
+        const now = new Date();
+        const updated = new Date(timestamp);
+        const diffInMinutes = Math.floor((now.getTime() - updated.getTime()) / (1000 * 60));
+        return diffInMinutes < 2;
+      };
+
+      const popupContent = `
+        <div style="font-family: system-ui; min-width: 200px;">
+          <div style="font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #1e293b;">
+            ${bus.nome}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${isRecentlyUpdated(bus.atualizado_em) ? '#22c55e' : '#94a3b8'};"></div>
+            <span style="font-size: 12px; font-weight: 500; color: ${isRecentlyUpdated(bus.atualizado_em) ? '#22c55e' : '#64748b'};">
+              ${isRecentlyUpdated(bus.atualizado_em) ? 'Ao Vivo' : 'Offline'}
+            </span>
+          </div>
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 2px;">
+            <strong>Latitude:</strong> ${bus.latitude.toFixed(6)}
+          </div>
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">
+            <strong>Longitude:</strong> ${bus.longitude.toFixed(6)}
+          </div>
+          <div style="font-size: 11px; color: #94a3b8;">
+            Atualizado ${getTimeAgo(bus.atualizado_em)}
+          </div>
+        </div>
+      `;
+      
+      marker.bindPopup(popupContent, {
+        closeButton: true,
+        className: 'bus-popup'
+      });
+
+      // Ao clicar no marcador, selecionar o ônibus
+      marker.on('click', () => {
+        onSelectBus(bus.id);
+      });
+      
       markers.current.set(bus.id, marker);
     });
 
@@ -119,19 +176,61 @@ const BusMap = ({ buses, selectedBusId, onLocationUpdate }: BusMapProps) => {
       iconAnchor: [24, 24],
     });
 
+    const getTimeAgo = (timestamp: string) => {
+      const now = new Date();
+      const updated = new Date(timestamp);
+      const diffInMinutes = Math.floor((now.getTime() - updated.getTime()) / (1000 * 60));
+      
+      if (diffInMinutes < 1) return 'Agora mesmo';
+      if (diffInMinutes === 1) return '1 min atrás';
+      if (diffInMinutes < 60) return `${diffInMinutes} min atrás`;
+      
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours === 1) return '1 hora atrás';
+      return `${diffInHours} horas atrás`;
+    };
+
+    const isRecentlyUpdated = (timestamp: string) => {
+      const now = new Date();
+      const updated = new Date(timestamp);
+      const diffInMinutes = Math.floor((now.getTime() - updated.getTime()) / (1000 * 60));
+      return diffInMinutes < 2;
+    };
+
     buses.forEach(bus => {
       const marker = markers.current.get(bus.id);
       if (marker) {
         marker.setLatLng([bus.latitude, bus.longitude]);
         marker.setIcon(createBusIcon(bus.id === selectedBusId));
+        
+        // Atualizar conteúdo do popup
+        const popupContent = `
+          <div style="font-family: system-ui; min-width: 200px;">
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #1e293b;">
+              ${bus.nome}
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: ${isRecentlyUpdated(bus.atualizado_em) ? '#22c55e' : '#94a3b8'};"></div>
+              <span style="font-size: 12px; font-weight: 500; color: ${isRecentlyUpdated(bus.atualizado_em) ? '#22c55e' : '#64748b'};">
+                ${isRecentlyUpdated(bus.atualizado_em) ? 'Ao Vivo' : 'Offline'}
+              </span>
+            </div>
+            <div style="font-size: 11px; color: #64748b; margin-bottom: 2px;">
+              <strong>Latitude:</strong> ${bus.latitude.toFixed(6)}
+            </div>
+            <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">
+              <strong>Longitude:</strong> ${bus.longitude.toFixed(6)}
+            </div>
+            <div style="font-size: 11px; color: #94a3b8;">
+              Atualizado ${getTimeAgo(bus.atualizado_em)}
+            </div>
+          </div>
+        `;
+        
+        marker.getPopup()?.setContent(popupContent);
       }
     });
-
-    const selectedBus = buses.find(b => b.id === selectedBusId);
-    if (selectedBus && onLocationUpdate) {
-      onLocationUpdate(selectedBus.latitude, selectedBus.longitude);
-    }
-  }, [buses, selectedBusId, onLocationUpdate]);
+  }, [buses, selectedBusId]);
 
   // Centralizar no ônibus selecionado
   useEffect(() => {

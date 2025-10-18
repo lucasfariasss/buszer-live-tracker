@@ -60,17 +60,16 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block fixed left-0 top-0 bottom-0 w-80 bg-background border-r z-[900] overflow-hidden">
+      <div className="hidden md:block fixed left-0 top-16 bottom-0 w-80 bg-background border-r z-[900] overflow-hidden">
         <div className="flex flex-col h-full">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold mb-3">Ônibus Disponíveis</h2>
+          <div className="p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
-                placeholder="Buscar ônibus..."
+                placeholder="Buscar ônibus ou rota..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="pl-10 h-11 text-base"
               />
             </div>
           </div>
@@ -84,47 +83,67 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                     key={bus.id}
                     onClick={() => onSelectBus(bus.id)}
                     className={cn(
-                      "p-4 cursor-pointer transition-all duration-200 hover:shadow-md",
+                      "p-4 cursor-pointer transition-all duration-200 hover:shadow-lg group",
                       isSelected 
-                        ? "border-primary bg-primary/5 shadow-md scale-[1.02]" 
-                        : "hover:border-primary/50"
+                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20" 
+                        : "hover:border-primary/30 hover:bg-accent/50"
                     )}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Bus className={cn(
-                            "h-4 w-4 flex-shrink-0",
-                            isSelected ? "text-primary" : "text-muted-foreground"
-                          )} />
-                          <h3 className={cn(
-                            "font-semibold truncate",
-                            isSelected ? "text-primary" : "text-foreground"
-                          )}>
-                            {bus.nome}
-                          </h3>
-                        </div>
-                        
-                        <div className="space-y-1.5 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 flex-shrink-0" />
-                            <span className="truncate">
-                              {bus.latitude.toFixed(6)}, {bus.longitude.toFixed(6)}
-                            </span>
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Bus className={cn(
+                              "h-5 w-5 flex-shrink-0",
+                              isSelected ? "text-primary" : "text-muted-foreground"
+                            )} />
+                            <h3 className={cn(
+                              "font-semibold text-base truncate",
+                              isSelected ? "text-primary" : "text-foreground"
+                            )}>
+                              {bus.nome}
+                            </h3>
                           </div>
                           
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={cn(
+                              "w-2 h-2 rounded-full",
+                              isRecentlyUpdated(bus.atualizado_em) 
+                                ? "bg-green-500 animate-pulse" 
+                                : "bg-gray-400"
+                            )} />
+                            <span className={cn(
+                              "text-xs font-medium",
+                              isRecentlyUpdated(bus.atualizado_em) 
+                                ? "text-green-600" 
+                                : "text-muted-foreground"
+                            )}>
+                              {isRecentlyUpdated(bus.atualizado_em) ? 'Ao Vivo' : 'Offline'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Clock className="h-3 w-3 flex-shrink-0" />
-                            <span>{getTimeAgo(bus.atualizado_em)}</span>
+                            <span>Há {getTimeAgo(bus.atualizado_em)}</span>
                           </div>
                         </div>
-                      </div>
 
-                      {isRecentlyUpdated(bus.atualizado_em) && (
-                        <Badge variant="outline" className="text-[10px] border-green-500 text-green-600 animate-pulse">
-                          Ao vivo
-                        </Badge>
-                      )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectBus(bus.id);
+                          }}
+                          className={cn(
+                            "p-2 rounded-full transition-colors",
+                            isSelected 
+                              ? "bg-primary text-primary-foreground" 
+                              : "bg-accent text-accent-foreground group-hover:bg-primary group-hover:text-primary-foreground"
+                          )}
+                          aria-label="Centralizar no mapa"
+                        >
+                          <MapPin className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   </Card>
                 );
@@ -161,14 +180,14 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
           </DrawerHeader>
 
           {snapPoint !== 0.15 && (
-            <div className="px-4 pb-3">
+            <div className="px-4 pb-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar ônibus..."
+                  placeholder="Buscar ônibus ou rota..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="pl-10 h-11 text-base"
                 />
               </div>
             </div>
@@ -186,47 +205,68 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                       setSnapPoint(0.15);
                     }}
                     className={cn(
-                      "p-4 cursor-pointer transition-all duration-200",
+                      "p-4 cursor-pointer transition-all duration-200 active:scale-[0.98] group",
                       isSelected 
-                        ? "border-primary bg-primary/5 shadow-md" 
-                        : "hover:border-primary/50 active:scale-[0.98]"
+                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20" 
+                        : "hover:border-primary/30 hover:bg-accent/50"
                     )}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Bus className={cn(
-                            "h-4 w-4 flex-shrink-0",
-                            isSelected ? "text-primary" : "text-muted-foreground"
-                          )} />
-                          <h3 className={cn(
-                            "font-semibold truncate",
-                            isSelected ? "text-primary" : "text-foreground"
-                          )}>
-                            {bus.nome}
-                          </h3>
-                        </div>
-                        
-                        <div className="space-y-1.5 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 flex-shrink-0" />
-                            <span className="truncate">
-                              {bus.latitude.toFixed(6)}, {bus.longitude.toFixed(6)}
-                            </span>
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Bus className={cn(
+                              "h-5 w-5 flex-shrink-0",
+                              isSelected ? "text-primary" : "text-muted-foreground"
+                            )} />
+                            <h3 className={cn(
+                              "font-semibold text-base truncate",
+                              isSelected ? "text-primary" : "text-foreground"
+                            )}>
+                              {bus.nome}
+                            </h3>
                           </div>
                           
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={cn(
+                              "w-2 h-2 rounded-full",
+                              isRecentlyUpdated(bus.atualizado_em) 
+                                ? "bg-green-500 animate-pulse" 
+                                : "bg-gray-400"
+                            )} />
+                            <span className={cn(
+                              "text-xs font-medium",
+                              isRecentlyUpdated(bus.atualizado_em) 
+                                ? "text-green-600" 
+                                : "text-muted-foreground"
+                            )}>
+                              {isRecentlyUpdated(bus.atualizado_em) ? 'Ao Vivo' : 'Offline'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Clock className="h-3 w-3 flex-shrink-0" />
-                            <span>{getTimeAgo(bus.atualizado_em)}</span>
+                            <span>Há {getTimeAgo(bus.atualizado_em)}</span>
                           </div>
                         </div>
-                      </div>
 
-                      {isRecentlyUpdated(bus.atualizado_em) && (
-                        <Badge variant="outline" className="text-[10px] border-green-500 text-green-600 animate-pulse">
-                          Ao vivo
-                        </Badge>
-                      )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectBus(bus.id);
+                            setSnapPoint(0.15);
+                          }}
+                          className={cn(
+                            "p-2 rounded-full transition-colors",
+                            isSelected 
+                              ? "bg-primary text-primary-foreground" 
+                              : "bg-accent text-accent-foreground group-hover:bg-primary group-hover:text-primary-foreground"
+                          )}
+                          aria-label="Centralizar no mapa"
+                        >
+                          <MapPin className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   </Card>
                 );
