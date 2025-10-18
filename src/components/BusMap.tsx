@@ -247,7 +247,7 @@ const BusMap = ({ buses, selectedBusId, onSelectBus }: BusMapProps) => {
         console.warn('Erro ao centralizar mapa:', error);
       }
     }
-  }, [selectedBusId, buses]);
+  }, [selectedBusId]);
 
   return (
     <div className="relative w-full h-screen">

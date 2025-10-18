@@ -72,9 +72,6 @@ const Index = () => {
               }
               return [...prev, updatedBus];
             });
-            toast.success('Localização atualizada!', {
-              description: `${updatedBus.nome} foi atualizado em tempo real.`,
-            });
           }
         }
       )
