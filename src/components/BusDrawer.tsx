@@ -28,7 +28,7 @@ interface BusDrawerProps {
 
 export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDrawerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.15);
+  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.25);
 
   const selectedBus = buses.find(b => b.id === selectedBusId);
 
@@ -155,31 +155,28 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
 
       {/* Mobile Drawer */}
       <Drawer
-        snapPoints={[0.15, 0.7]}
+        snapPoints={[0.25, 0.7]}
         activeSnapPoint={snapPoint}
         setActiveSnapPoint={setSnapPoint}
         dismissible={false}
       >
         <DrawerContent className="md:hidden">
-          <DrawerHeader className="pb-3">
-            <DrawerTitle className="text-base text-center">
-              {snapPoint === 0.15 ? (
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Bus className="h-5 w-5" />
-                  <span>Ver Rotas Disponíveis</span>
-                </div>
+          <DrawerHeader className="pb-2">
+            <DrawerTitle className="text-base">
+              {snapPoint === 0.25 ? (
+                `${buses.length} ${buses.length === 1 ? 'Ônibus' : 'Ônibus'}`
               ) : (
-                "Rotas de Ônibus"
+                "Ônibus Disponíveis"
               )}
             </DrawerTitle>
           </DrawerHeader>
 
-          {snapPoint !== 0.15 && (
+          {snapPoint !== 0.25 && (
             <div className="px-4 pb-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar rota..."
+                  placeholder="Buscar ônibus..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-12 text-base border-2"
@@ -188,8 +185,11 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
             </div>
           )}
 
-          <ScrollArea className="h-[calc(70vh-120px)] px-3 pb-4">
-            <div className="space-y-2">
+          <ScrollArea className={snapPoint === 0.25 ? "h-[calc(25vh-80px)]" : "h-[calc(70vh-120px)]"}>
+            <div className={cn(
+              "space-y-2",
+              snapPoint === 0.25 ? "px-3 pb-2" : "px-3 pb-4"
+            )}>
               {filteredBuses.map((bus) => {
                 const isSelected = bus.id === selectedBusId;
                 return (
@@ -197,7 +197,7 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                     key={bus.id}
                     onClick={() => {
                       onSelectBus(bus.id);
-                      setSnapPoint(0.15);
+                      setSnapPoint(0.25);
                     }}
                     className={cn(
                       "p-4 cursor-pointer transition-all duration-200 active:scale-[0.98] group",
@@ -237,7 +237,7 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                             )}>
                               {isRecentlyUpdated(bus.atualizado_em) ? 'Ao Vivo' : 'Offline'}
                             </span>
-                          </div>
+            </div>
 
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Clock className="h-3 w-3 flex-shrink-0" />
@@ -249,7 +249,7 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                           onClick={(e) => {
                             e.stopPropagation();
                             onSelectBus(bus.id);
-                            setSnapPoint(0.15);
+                            setSnapPoint(0.25);
                           }}
                           className={cn(
                             "p-2 rounded-full transition-colors",
