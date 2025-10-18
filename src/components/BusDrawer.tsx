@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bus, MapPin, Clock, Search } from "lucide-react";
+import { Bus, MapPin, Clock, Search, X } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -28,7 +28,7 @@ interface BusDrawerProps {
 
 export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDrawerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.25);
+  const [isOpen, setIsOpen] = useState(false);
 
   const selectedBus = buses.find(b => b.id === selectedBusId);
 
@@ -153,43 +153,48 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      <Drawer
-        snapPoints={[0.25, 0.7]}
-        activeSnapPoint={snapPoint}
-        setActiveSnapPoint={setSnapPoint}
-        dismissible={false}
+      {/* Mobile FAB */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="md:hidden fixed bottom-6 left-6 z-[1000] bg-primary text-primary-foreground rounded-full p-4 shadow-lg hover:scale-110 active:scale-95 transition-transform animate-pulse"
+        aria-label="Abrir menu de ônibus"
       >
-        <DrawerContent className="md:hidden">
-          <DrawerHeader className="pb-2">
-            <DrawerTitle className="text-base">
-              {snapPoint === 0.25 ? (
-                `${buses.length} ${buses.length === 1 ? 'Ônibus' : 'Ônibus'}`
-              ) : (
-                "Ônibus Disponíveis"
-              )}
+        <Bus className="h-6 w-6" />
+        <Badge className="absolute -top-1 -right-1 h-6 w-6 flex items-center justify-center p-0 bg-destructive text-destructive-foreground">
+          {buses.length}
+        </Badge>
+      </button>
+
+      {/* Mobile Drawer */}
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <DrawerContent className="md:hidden h-[75vh]">
+          <DrawerHeader className="pb-2 relative">
+            <DrawerTitle className="text-lg font-semibold">
+              Ônibus Disponíveis
             </DrawerTitle>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute right-4 top-4 p-2 rounded-full hover:bg-accent transition-colors"
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </DrawerHeader>
 
-          {snapPoint !== 0.25 && (
-            <div className="px-4 pb-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar ônibus..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 text-base border-2"
-                />
-              </div>
+          <div className="px-4 pb-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Buscar ônibus..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 text-base border-2"
+              />
             </div>
-          )}
+          </div>
 
-          <ScrollArea className={snapPoint === 0.25 ? "h-[calc(25vh-80px)]" : "h-[calc(70vh-120px)]"}>
-            <div className={cn(
-              "space-y-2",
-              snapPoint === 0.25 ? "px-3 pb-2" : "px-3 pb-4"
-            )}>
+          <ScrollArea className="flex-1 px-3 pb-4">
+            <div className="space-y-2">
               {filteredBuses.map((bus) => {
                 const isSelected = bus.id === selectedBusId;
                 return (
@@ -197,7 +202,7 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                     key={bus.id}
                     onClick={() => {
                       onSelectBus(bus.id);
-                      setSnapPoint(0.25);
+                      setIsOpen(false);
                     }}
                     className={cn(
                       "p-4 cursor-pointer transition-all duration-200 active:scale-[0.98] group",
@@ -248,7 +253,7 @@ export default function BusDrawer({ buses, selectedBusId, onSelectBus }: BusDraw
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectBus(bus.id);
-                          setSnapPoint(0.25);
+                          setIsOpen(false);
                         }}
                         className={cn(
                           "p-2 rounded-full transition-colors",
