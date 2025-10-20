@@ -16,6 +16,10 @@ const authSchema = z.object({
   password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres").max(100, "Senha muito longa"),
 });
 
+const resetEmailSchema = z.object({
+  email: z.string().email("Email inválido").max(255, "Email muito longo"),
+});
+
 type AuthFormData = z.infer<typeof authSchema>;
 
 export default function Auth() {
@@ -70,6 +74,9 @@ export default function Auth() {
     setIsLoading(false);
   };
 
+  // Função de signup removida - novos admins devem ser criados manualmente
+  // via Supabase Dashboard para evitar cadastros públicos não autorizados
+  /*
   const onSignup = async (data: AuthFormData) => {
     setIsLoading(true);
     const { error } = await supabase.auth.signUp({
@@ -96,12 +103,24 @@ export default function Auth() {
     }
     setIsLoading(false);
   };
+  */
 
   const handlePasswordReset = async () => {
     if (!resetEmail) {
       toast({
         title: "Email necessário",
         description: "Por favor, insira seu email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validação de formato de email
+    const validationResult = resetEmailSchema.safeParse({ email: resetEmail });
+    if (!validationResult.success) {
+      toast({
+        title: "Email inválido",
+        description: validationResult.error.errors[0].message,
         variant: "destructive",
       });
       return;
@@ -178,14 +197,13 @@ export default function Auth() {
         <CardHeader>
           <CardTitle>Painel Administrativo</CardTitle>
           <CardDescription>
-            Faça login ou crie uma conta para gerenciar a frota
+            Acesso restrito a administradores
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-1">
               <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Cadastro</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
@@ -224,38 +242,6 @@ export default function Auth() {
                   onClick={() => setShowReset(true)}
                 >
                   Esqueci a senha
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup">
-              <form onSubmit={handleSubmit(onSignup)} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••"
-                    {...register("password")}
-                  />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password.message}</p>
-                  )}
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Criando..." : "Criar Conta"}
                 </Button>
               </form>
             </TabsContent>
