@@ -35,6 +35,25 @@ export default function Admin() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate("/auth");
+      return;
+    }
+
+    // Verificar se o usuário tem role de admin
+    const { data: roles, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", session.user.id)
+      .eq("role", "admin")
+      .single();
+
+    if (error || !roles) {
+      toast({
+        title: "Acesso negado",
+        description: "Você não tem permissão para acessar o painel administrativo.",
+        variant: "destructive",
+      });
+      await supabase.auth.signOut();
+      navigate("/");
     }
   };
 
