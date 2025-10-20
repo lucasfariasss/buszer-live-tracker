@@ -240,9 +240,9 @@ const BusMap = ({ buses, selectedBusId, onSelectBus }: BusMapProps) => {
     const selectedBus = buses.find(b => b.id === selectedBusId);
     if (selectedBus) {
       try {
-        m.flyTo([selectedBus.latitude, selectedBus.longitude], 13, {
-          duration: 1,
-        });
+      m.flyTo([selectedBus.latitude, selectedBus.longitude], 16, {
+        duration: 1,
+      });
       } catch (error) {
         console.warn('Erro ao centralizar mapa:', error);
       }
