@@ -192,62 +192,80 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Painel Administrativo</CardTitle>
-          <CardDescription>
-            Acesso restrito a administradores
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-1">
-              <TabsTrigger value="login">Login</TabsTrigger>
-            </TabsList>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+      <div className="w-full max-w-md space-y-6">
+        {/* Logo/Title Section */}
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold gradient-text">Buszer</h1>
+          <p className="text-muted-foreground">Painel Administrativo</p>
+        </div>
 
-            <TabsContent value="login">
-              <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Senha</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••"
-                    {...register("password")}
-                  />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password.message}</p>
-                  )}
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Entrando..." : "Entrar"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="link"
-                  className="w-full"
-                  onClick={() => setShowReset(true)}
-                >
-                  Esqueci a senha
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+        {/* Card with improved styling */}
+        <Card className="shadow-xl border-2">
+          <CardHeader className="space-y-1 text-center">
+            <CardTitle className="text-2xl">Acesso Admin</CardTitle>
+            <CardDescription>
+              Entre com suas credenciais de administrador
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="login-email">Email</Label>
+                <Input
+                  id="login-email"
+                  type="email"
+                  placeholder="admin@buszer.com"
+                  {...register("email")}
+                  className="h-11"
+                />
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="login-password">Senha</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••"
+                  {...register("password")}
+                  className="h-11"
+                />
+                {errors.password && (
+                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                )}
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full h-11 text-base font-medium" 
+                disabled={isLoading}
+              >
+                {isLoading ? "Entrando..." : "Entrar no Painel"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                onClick={() => setShowReset(true)}
+              >
+                Esqueci minha senha
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Back to home link */}
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={() => window.location.href = '/'}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            ← Voltar para a página inicial
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

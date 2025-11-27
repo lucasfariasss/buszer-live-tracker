@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import BusMap from "@/components/BusMap";
-
 import BusDrawer from "@/components/BusDrawer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -50,7 +49,6 @@ const Index = () => {
 
     fetchBusData();
 
-    // Configurar realtime para receber atualizações
     const channel = supabase
       .channel('onibus-changes')
       .on(
@@ -104,11 +102,8 @@ const Index = () => {
     );
   }
 
-  
-
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-[1000] flex items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
           <Bus className="h-6 w-6 text-primary" />
@@ -123,7 +118,6 @@ const Index = () => {
         </Link>
       </header>
       
-      {/* Main Content */}
       <div className="md:ml-80 h-full pt-16">
         <BusMap 
           buses={buses}
@@ -132,7 +126,6 @@ const Index = () => {
         />
       </div>
 
-      {/* Bus Selection Drawer/Sidebar */}
       <BusDrawer 
         buses={buses}
         selectedBusId={selectedBusId}
